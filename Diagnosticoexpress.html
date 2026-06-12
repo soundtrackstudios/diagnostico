@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soundtrack Studios - Diagnóstico Express</title>
+    <style>
+        :root {
+            --primary: #d4af38; /* Dorado Soundtrack */
+            --dark: #121212;    /* Oscuro Apagado Soundtrack */
+            --card-bg: #1e1e1e; /* Gris oscuro para contraste de tarjetas */
+            --text: #ffffff;    /* Blanco Soundtrack */
+            --border: #2d2d2d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Contenedor Principal */
+        .quiz-container {
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: 24px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 550px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+            position: relative;
+        }
+
+        /* Encabezado */
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text);
+        }
+
+        .brand {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Estado del progreso */
+        .progress-bar {
+            height: 6px;
+            background: #2a2a2a;
+            border-radius: 3px;
+            margin: 20px 0 30px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            transition: width 0.4s ease;
+        }
+
+        /* Pantallas (Pasos) */
+        .step {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        p.bot-text {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        /* Formularios e Inputs */
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: #a0a0a0;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"], input[type="email"], input[type="tel"] {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            background: var(--dark);
+            color: white;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Botones y Opciones */
+        .btn-main {
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 14px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(212, 175, 56, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 56, 0.4);
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: var(--dark);
+            border: 2px solid var(--border);
+            color: white;
+            padding: 16px;
+            text-align: left;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: #1a1a1a;
+            transform: scale(1.02);
+        }
+
+        .option-badge {
+            background: #2a2a2a;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            margin-right: 15px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* Resultado Final */
+        .profile-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin: 15px 0;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+
+        .badge-service {
+            background: rgba(212, 175, 56, 0.1);
+            border: 1px solid var(--primary);
+            padding: 12px;
+            border-radius: 10px;
+            color: var(--primary);
+            font-weight: bold;
+            margin: 15px 0;
+            display: inline-block;
+        }
+
+        .cta-live {
+            border-top: 1px dashed var(--border);
+            margin-top: 25px;
+            padding-top: 20px;
+            font-size: 1.1rem;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        
+        /* Panel de descarga de datos */
+        .admin-panel {
+            margin-top: 35px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+        .btn-admin {
+            background: transparent;
+            color: #555;
+            border: 1px solid #333;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-admin:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <h1><span class="brand">Soundtrack</span> Studios</h1>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+
+        <div class="step active" id="step-0">
+            <p class="bot-text">¡Hola! Bienvenido al laboratorio creativo de Soundtrack Studios. 🎤✨ Vamos a descubrir el potencial oculto de tu proyecto en 30 segundos.</p>
+            <p style="color: var(--primary); margin-bottom: 20px; font-weight: bold;">Antes de empezar el test, déjanos tus datos para asegurar tu diagnóstico: 📝</p>
+            
+            <form id="lead-form" onsubmit="startQuiz(event)">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="name" required placeholder="Ej. Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="email" required placeholder="Ej. juan@correo.com">
+                </div>
+                <div class="form-group">
+                    <label>Celular</label>
+                    <input type="tel" id="phone" required placeholder="Ej. 300 123 4567">
+                </div>
+                <button type="submit" class="btn-main">¡ARRANCAR EL TEST! 🚀</button>
+            </form>
+        </div>
+
+        <div class="step" id="step-1">
+            <p class="bot-text">¡Datos listos, vamos al grano! 🔥 ¿Cuál es el formato principal con el que sueñas conectar con tu audiencia?</p>
+            <div class="options-container">
+                <button class="option-btn" onclick="nextStep(1, 'A')"><span class="option-badge">A</span> Hablando a profundidad, contando historias o con un Podcast.</button>
+                <button class="option-btn" onclick="nextStep(1, 'B')"><span class="option-badge">B</span> Con videos cortos, dinámicos, tendencias y Reels diarios.</button>
+                <button class="option-btn" onclick="nextStep(1, 'C')"><span class="option-badge">C</span> Eventos en vivo, lanzamientos grandes o transmisiones corporativas.</button>
+                <button class="option-btn" onclick="nextStep(1, 'D')"><span class="option-badge">D</span> Con imágenes perfectas, una identidad pulida y fotos Pro.</button>
+            </div>
+        </div>
+
+        <div class="step" id="step-2">
+            <p class="bot-text">¡Me encanta el enfoque! 😎 ¿Cuál es tu mayor dolor de cabeza o reto actual en este momento?</p>
+            <div class="options-container">
+                <button class="option-btn" onclick="nextStep(2, 'A')"><span class="option-badge">A</span> Me falta constancia o un espacio profesional para grabar mi voz.</button>
+                <button class="option-btn" onclick="nextStep(2, 'B')"><span class="option-badge">B</span> No tengo tiempo para editar ni sé cómo manejar mis redes sociales.</button>
+                <button class="option-btn" onclick="nextStep(2, 'C')"><span class="option-badge">C</span> No sé cómo transmitir online con calidad de televisión digital.</button>
+                <button class="option-btn" onclick="nextStep(2, 'D')"><span class="option-badge">D</span> Mi marca se ve improvisada; necesito un diseño y logo impecables.</button>
+            </div>
+        </div>
+
+        <div class="step" id="step-3">
+            <p class="bot-text">¡Última y definimos! 🎯 Si tu marca fuera una celebridad de internet, ¿cómo se comportaría?</p>
+            <div class="options-container">
+                <button class="option-btn" onclick="calculateResult('A')"><span class="option-badge">A</span> Un líder de opinión que inspira a través de conversaciones.</button>
+                <button class="option-btn" onclick="calculateResult('B')"><span class="option-badge">B</span> Un creador viral que domina los algoritmos de TikTok.</button>
+                <button class="option-btn" onclick="calculateResult('C')"><span class="option-badge">C</span> Un gran anfitrión que junta a miles en un mega evento.</button>
+                <button class="option-btn" onclick="calculateResult('D')"><span class="option-badge">D</span> Un artista estético enfocado en que todo se vea de revista.</button>
+            </div>
+        </div>
+
+        <div class="step" id="step-result">
+            <p class="bot-text" style="color: var(--primary);" id="result-greeting">¡Brillante!</p>
+            <div class="profile-title" id="profile-name">Perfil</div>
+            <p class="bot-text" id="profile-desc">Explicación corta.</p>
+            
+            <div style="font-size: 0.9rem; color: #a0a0a0;">Tu servicio ideal es:</div>
+            <div class="badge-service" id="ideal-service">Servicio</div>
+
+            <div class="cta-live">
+                👋 ¡No esperes más! Habla ya mismo con nuestro equipo aquí en el stand para materializar este diagnóstico y activar tu proyecto.
+            </div>
+            
+            <button class="btn-main" onclick="resetQuiz()" style="margin-top: 25px; background: #2a2a2a; color: white; font-size: 0.9rem; padding: 10px 20px; box-shadow: none;">NUEVO DIAGNÓSTICO 🔄</button>
+        </div>
+        
+        <div class="admin-panel">
+            <button class="btn-admin" onclick="downloadCSV()">📥 Descargar Leads (CSV)</button>
+        </div>
+
+    </div>
+
+    <script>
+        let answers = { A: 0, B: 0, C: 0, D: 0 };
+        let currentLead = {};
+
+        function updateProgress(percentage) {
+            document.getElementById('progress').style.width = percentage + '%';
+        }
+
+        function startQuiz(event) {
+            event.preventDefault();
+            
+            // Inicializar el objeto con los datos entregados
+            currentLead = {
+                fecha: new Date().toLocaleString(),
+                nombre: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                celular: document.getElementById('phone').value,
+                perfil: '',
+                servicio: ''
+            };
+
+            document.getElementById('step-0').classList.remove('active');
+            document.getElementById('step-1').classList.add('active');
+            updateProgress(33);
+        }
+
+        function nextStep(currentStep, option) {
+            answers[option]++;
+            document.getElementById(`step-${currentStep}`).classList.remove('active');
+            
+            let next = currentStep + 1;
+            document.getElementById(`step-${next}`).classList.add('active');
+            
+            if(next === 2) updateProgress(66);
+            if(next === 3) updateProgress(90);
+        }
+
+        function calculateResult(option) {
+            answers[option]++;
+            updateProgress(100);
+            
+            let maxOption = Object.keys(answers).reduce((a, b) => answers[a] > answers[b] ? a : b);
+            
+            document.getElementById('step-3').classList.remove('active');
+            document.getElementById('step-result').classList.add('active');
+
+            let firstName = currentLead.nombre.split(' ')[0];
+            document.getElementById('result-greeting').innerText = `¡Brillante, ${firstName}! Analicé tus respuestas en tiempo récord y tu perfil es:`;
+
+            let profileName = "";
+            let profileDesc = "";
+            let idealService = "";
+
+            switch(maxOption) {
+                case 'A':
+                    profileName = "¡El Comunicador / Líder de Opinión! 🎙️";
+                    profileDesc = "Naciste para conectar a través de la voz, posicionarte con autoridad y generar constancia en tu nicho.";
+                    idealService = "Grabación Profesional de Podcasts (Audio y Video) o Paquetes Mensuales de Soundtrack Studios";
+                    break;
+                case 'B':
+                    profileName = "¡El Creador de Tendencias! ⚡";
+                    profileDesc = "Tu proyecto necesita visibilidad rápida e impacto visual constante delegando estratégicamente el manejo de tus cuentas.";
+                    idealService = "Paquete Mensual con Community Manager (Grabación, edición de Reels/TikTok y manejo de cuentas)";
+                    break;
+                case 'C':
+                    profileName = "¡El Anfitrión de Impacto! 📡";
+                    profileDesc = "Tus ideas son masivas y requieres transmitir eventos o lanzamientos con la más alta fidelidad técnica del mercado.";
+                    idealService = "Emisión por Streaming Profesional (Hasta 3 canales simultáneos con personal y equipos Pro)";
+                    break;
+                case 'D':
+                    profileName = "¡El Detallista Visual! 🎨";
+                    profileDesc = "Tienes las bases sólidas, pero es hora de romper el molde puliendo tu imagen corporativa y dándole una voz comercial potente.";
+                    idealService = "Servicios Adicionales de Fotografía Profesional, Diseño Gráfico o Banco de Voces Comerciales";
+                    break;
+            }
+
+            document.getElementById('profile-name').innerText = profileName;
+            document.getElementById('profile-desc').innerText = profileDesc;
+            document.getElementById('ideal-service').innerText = idealService;
+
+            // Almacenar el resultado calculado en el lead
+            currentLead.perfil = profileName.replace(/[^a-zA-Z0-9 /!🎙️⚡📡🎨]/g, "");
+            currentLead.servicio = idealService;
+            
+            // Ejecutar el guardado local autónomo
+            saveLead(currentLead);
+        }
+
+        // GUARDA EN LA MEMORIA INTERNA DEL NAVEGADOR (Resiste cierres de pestaña y offline)
+        function saveLead(lead) {
+            let leads = JSON.parse(localStorage.getItem('soundtrack_leads')) || [];
+            leads.push(lead);
+            localStorage.setItem('soundtrack_leads', JSON.stringify(leads));
+        }
+
+        // EXPORTADOR AUTOMÁTICO EN EXCEL/CSV
+        function downloadCSV() {
+            let leads = JSON.parse(localStorage.getItem('soundtrack_leads')) || [];
+            if(leads.length === 0) {
+                alert("Aún no tienes registros de visitantes guardados.");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,\\uFEFF"; // BOM para acentos correctos en Excel
+            csvContent += "Fecha,Nombre,Email,Celular,Perfil Asignado,Servicio Ideal\\n";
+
+            leads.forEach(l => {
+                let row = `"${l.fecha}","${l.nombre}","${l.email}","${l.celular}","${l.perfil}","${l.servicio}"`;
+                csvContent += row + "\\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Leads_Feria_Soundtrack.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function resetQuiz() {
+            answers = { A: 0, B: 0, C: 0, D: 0 };
+            currentLead = {};
+            document.getElementById('lead-form').reset();
+            document.getElementById('step-result').classList.remove('active');
+            document.getElementById('step-0').classList.add('active');
+            updateProgress(0);
+        }
+    </script>
+</body>
+</html>
